@@ -356,15 +356,71 @@
             50% { transform: scale(1.2); }
         }
 
+        /* Mobile Navigation Styles */
+        .mobile-menu-toggle {
+            display: none;
+            background: none;
+            border: none;
+            color: white;
+            font-size: 24px;
+            cursor: pointer;
+            padding: 8px;
+        }
+
+        .nav-menu {
+            display: flex;
+        }
+
         @media (max-width: 768px) {
             .nav {
+                flex-direction: row;
+                justify-content: space-between;
+                align-items: center;
+                gap: 12px;
+            }
+            
+            .mobile-menu-toggle {
+                display: block;
+            }
+            
+            .nav-menu {
+                display: none;
+                position: absolute;
+                top: 100%;
+                left: 0;
+                right: 0;
+                background: linear-gradient(135deg, var(--burgundy), #a0002a);
+                box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+                z-index: 100;
+            }
+            
+            .nav-menu.active {
+                display: block;
+            }
+            
+            .nav-menu ul {
                 flex-direction: column;
-                gap: 16px;
+                gap: 0;
+                padding: 20px;
             }
-            nav ul {
-                flex-wrap: wrap;
-                justify-content: center;
+            
+            .nav-menu li {
+                width: 100%;
             }
+            
+            .nav-menu a {
+                display: block;
+                padding: 12px 16px;
+                border-radius: 8px;
+                margin-bottom: 8px;
+                text-align: center;
+                border: 1px solid rgba(255,255,255,0.1);
+            }
+            
+            .nav-menu a:hover {
+                background: rgba(255,255,255,0.15);
+            }
+            
             .hero h1 {
                 font-size: 36px;
             }
@@ -417,17 +473,24 @@
                 <div class="logo">🌶️</div>
                 <h1>TAWALET</h1>
             </div>
-            <nav>
+            
+            <!-- Mobile Menu Toggle -->
+            <button class="mobile-menu-toggle" onclick="toggleMobileMenu()">
+                <span id="menu-icon">☰</span>
+            </button>
+            
+            <!-- Navigation Menu -->
+            <nav class="nav-menu" id="nav-menu">
                 <ul>
-                    <li><a onclick="showMainContent(); scrollToSection('hero')">Beranda</a></li>
-                    <li><a onclick="showMainContent(); scrollToSection('tentang')">Tentang</a></li>
-                    <li><a onclick="showMainContent(); scrollToSection('produk')">Produk</a></li>
-                    <li><a onclick="showSection('keranjang')" style="position: relative;">
+                    <li><a onclick="showMainContent(); scrollToSection('hero'); closeMobileMenu()">Beranda</a></li>
+                    <li><a onclick="showMainContent(); scrollToSection('tentang'); closeMobileMenu()">Tentang</a></li>
+                    <li><a onclick="showMainContent(); scrollToSection('produk'); closeMobileMenu()">Produk</a></li>
+                    <li><a onclick="showSection('keranjang'); closeMobileMenu()" style="position: relative;">
                         Keranjang
                         <span id="cart-badge" class="cart-badge hidden">0</span>
                     </a></li>
-                    <li><a onclick="showSection('kontak')">Kontak</a></li>
-                    <li><a onclick="showSection('admin')" class="btn">Admin</a></li>
+                    <li><a onclick="showSection('kontak'); closeMobileMenu()">Kontak</a></li>
+                    <li><a onclick="showSection('admin'); closeMobileMenu()" class="btn">Admin</a></li>
                 </ul>
             </nav>
         </div>
@@ -755,6 +818,7 @@
                         </button>
                     </form>
                     <p style="text-align: center; font-size: 14px; color: var(--muted); margin-top: 16px;">
+                        Demo: username = admin, password = admin123
                     </p>
                 </div>
             </div>
@@ -2420,6 +2484,40 @@
             }
         }
 
+        // Mobile menu functions
+        function toggleMobileMenu() {
+            const navMenu = document.getElementById('nav-menu');
+            const menuIcon = document.getElementById('menu-icon');
+            
+            navMenu.classList.toggle('active');
+            
+            // Change icon
+            if (navMenu.classList.contains('active')) {
+                menuIcon.textContent = '✕';
+            } else {
+                menuIcon.textContent = '☰';
+            }
+        }
+
+        function closeMobileMenu() {
+            const navMenu = document.getElementById('nav-menu');
+            const menuIcon = document.getElementById('menu-icon');
+            
+            navMenu.classList.remove('active');
+            menuIcon.textContent = '☰';
+        }
+
+        // Close mobile menu when clicking outside
+        document.addEventListener('click', function(event) {
+            const navMenu = document.getElementById('nav-menu');
+            const menuToggle = document.querySelector('.mobile-menu-toggle');
+            const nav = document.querySelector('.nav');
+            
+            if (!nav.contains(event.target) && navMenu.classList.contains('active')) {
+                closeMobileMenu();
+            }
+        });
+
         // Initialize page
         document.addEventListener('DOMContentLoaded', function() {
             showMainContent();
@@ -2438,7 +2536,7 @@
         <div class="container">
             <div style="text-align: center;">
                 <div style="display: flex; align-items: center; justify-content: center; gap: 12px; margin-bottom: 16px;">
-                  <div class="logo">🌶️</div>
+                    <div class="logo">🌶️</div>
                     <h3 style="font-family: 'Fredoka One', cursive; color: var(--yellow); font-size: 24px; text-shadow: 2px 2px 4px rgba(0,0,0,0.3);">TAWALET</h3>
                 </div>
                 <p style="color: rgba(255,255,255,0.8); margin-bottom: 16px;">
@@ -2455,5 +2553,5 @@
             </div>
         </div>
     </footer>
-<script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'9891c79cf56c81c2',t:'MTc1OTU1MDUwNC4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+<script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'98921cec11e3f8d6',t:'MTc1OTU1Mzk5OS4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
 </html>
